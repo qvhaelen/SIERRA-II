@@ -1,0 +1,9 @@
+*************************************************************************************************
+Date de la simulation (écriture des résultats et fin du programme): 
+Tue Feb  9 05:25:30 2016
+
+*************************************************************************************************
+Elapsed CPU time for the  completion of the job is: 1 seconds = 0.0166667 minutes 
+Computation of MCA analysis: yes
+Thermodynamical analysis: no
+*********************************** FIN DES STATISTIQUES *****************************************
