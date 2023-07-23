@@ -1,0 +1,1 @@
+void output_statistics_sierraII(double& cpu_duration, bool& MCA );
