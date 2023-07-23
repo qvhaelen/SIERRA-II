@@ -1,0 +1,985 @@
+﻿#####################################################################################################################
+#
+#                                          CODE FOR THE GENERATION OF SIERRA II
+#                                                   
+#
+#####################################################################################################################
+
+# fichier dans le quel on met les codes sources a compiler
+denomination_projet<-paste("WNT-REDUCED-MODEL-3",sep="")
+
+fichier_projet_racine<-paste("C:\\Users\\Quentin\\Documents\\ADMINISTRATION\\INSILICOSCREEN\\PROJECTS\\",denomination_projet,sep="")
+
+dossier_projet_sierraII<-paste("A1-0002-SIERRAII",sep="")
+
+mac_os <-TRUE
+if (mac_os){dossier_sortie_path<-paste("",sep="")}else{dossier_sortie_path<-paste("/home/trajan987/",dossier_projet_sierraII,"/",sep="")}
+
+fichier_output_sierraII_projet<-paste("C:\\Users\\Quentin\\Documents\\MY-FUTURE-PROJECT\\CODE-WNT-REDUCED-2021\\",denomination_projet,"\\",dossier_projet_sierraII,sep="")
+
+reactions_file_initial_data<-paste("C:\\Users\\Quentin\\Documents\\MY-FUTURE-PROJECT\\CODE-WNT-REDUCED-2021\\WNT-REDUCED-MODEL-3\\MODEL-FILES")
+
+source_code_symbolic_mathematica<-paste("C:\\Users\\Quentin\\Documents\\MY-FUTURE-PROJECT\\CODE-WNT-REDUCED-2021\\WNT-REDUCED-MODEL-3\\MODEL-FILES")
+
+
+#######################################################################################################################
+
+setwd(reactions_file_initial_data)
+
+list_of_repressors_genes<-paste("repressor_list_reaction.csv",sep="")
+list_of_repressors_genes_rates<-paste("repressor_list_rate_constant.csv",sep="")
+
+reactions_input <- read.csv('reactions_max.csv',header=FALSE)
+repressor_rate_constants<-read.csv(list_of_repressors_genes_rates, header =FALSE)
+repressor<-read.csv(list_of_repressors_genes, header = FALSE)
+
+# 'nbre_reactions' is the total number of reactions (forward+backward) in the network
+# 'nbre_species' is the number of chemical  species appearing in the chemical  equations
+
+nbre_reactions<- reactions_input[1,5]
+nbre_species<- reactions_input[2,5]
+nbre_species_active_ode<- reactions_input[3,5]
+
+
+########################################################################################################################
+#
+#                             GENERATION OUTPUT STATISTIQUE
+#
+########################################################################################################################
+
+output_sierraI_stat<-matrix(nrow = 60	, ncol=1)
+output_sierraI_stat[,]<-"NA?#"
+k<-1
+
+output_sierraI_stat[k,1]<-paste(" /* fstream: stream  class to both read and write  from/to  files */",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("#include <fstream>",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("/* utilisation des chaines de caractÃ¨res*/",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("/* contient les Ã©lÃ©ments cin et cout entre autre*/",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("#include <iostream>",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("#include <string>",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("/* utilisation des manipulateurs*/",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("#include<iomanip>",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("/*conversion nombre string et tring nombre (stringstream,  etc)*/",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("#include<sstream>",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("#include<ctime>",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("#include\"output_statistics_sierraII.h\"",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("using namespace std;",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("void output_statistics_sierraII(double& cpu_duration, bool& MCA ){",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("string OUTPUT_FILE_NAME =\"",dossier_sortie_path,"output_data/\";",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("string  filename =OUTPUT_FILE_NAME+ \"OUTPUT-SIERRAII-STATISTIQUES.txt\";",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("time_t rawtime;",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("struct tm *timeinfo;",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("char format[32];",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("time(&rawtime);",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("timeinfo = localtime(&rawtime);",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("ofstream output_file(filename.c_str());",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("if (output_file.is_open()){",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("  output_file<<\"*************************************************************************************************\"<< endl;",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("  output_file<< \"Date de la simulation (Ã©criture des rÃ©sultats et fin du programme): \"<< endl; ",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("  output_file<< asctime(timeinfo) <<endl;",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste(" output_file<<\"*************************************************************************************************\"<< endl;",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("  output_file<<\"Elapsed CPU time for the  completion of the job is: \" <<cpu_duration << \" seconds\"<< \" = \"<<  cpu_duration/60.0 <<\" minutes \" << endl;",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("  if(MCA){output_file<< \"Computation of MCA analysis: yes\"<<endl;}else{output_file<< \"Computation of MCA analysis:  no\"<<endl;}",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("  if(THERMO_CYCLE){output_file<< \"Thermodynamical analysis: yes\" <<endl;}else{output_file<< \"Thermodynamical analysis: no\" <<endl;}",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("  output_file<<\"*********************************** FIN DES STATISTIQUES *****************************************\" << endl;",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("  output_file.close();",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("}else{cout << \"file can not be opened\"  << endl;}",sep="")
+k<-k+1
+output_sierraI_stat[k,1]<-paste("return;}",sep="")
+
+
+
+for (i in 1:nrow(output_sierraI_stat)){
+if (as.character(output_sierraI_stat[i,1])==as.character("NA?#")){output_sierraI_stat[i,1]<-""}
+}
+setwd(fichier_output_sierraII_projet)
+write(output_sierraI_stat, file="output_statistics_sierraII.cc")
+setwd(reactions_file_initial_data)
+
+
+
+
+
+########################################################################################################################
+#
+#                GENERATION  output_conservation_relationships
+#
+########################################################################################################################
+
+
+output_conservation_relationships<-matrix(nrow = 86	, ncol=1)
+output_conservation_relationships[,]<-"NA?#"
+k<-1
+output_conservation_relationships[k,1]<-paste("/* contient les éléments cin et cout entre autre*/",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("#include <iostream>",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("/* fstream: stream  class to both read and write  from/to  files */",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("#include <fstream>",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("/* utilisation des chaines de caractères*/",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("#include <string>",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("/* utilisation des manipulateurs*/",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("#include<iomanip>",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("/*conversion nombre string et tring nombre (stringstream,  etc)*/",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("#include<sstream>",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("#include\"output_conservation_relationships.h\"",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("using namespace std;",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("void output_conservation_relationships(double** matrix_coef_L, int* X_echelon_label, int& dim_Nr, int& number_vertices){",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("int*    nbre_species_conservation;",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("nbre_species_conservation= new int[number_vertices-dim_Nr+1];",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("string OUTPUT_FILE_NAME =\"",dossier_sortie_path,"output_data/\";",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("string  filename1 =OUTPUT_FILE_NAME+\"CONSERVATION_RELATIONSHIPS.csv\";",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("string  filename2 =OUTPUT_FILE_NAME+\"matrix_coef_L.csv\";",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("string  filename3 =OUTPUT_FILE_NAME+\" X_echelon_label.csv\";",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("string  filename4 =OUTPUT_FILE_NAME+\" species_involved_in_conservation_relations.csv\";",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("string  filename5 =OUTPUT_FILE_NAME+\" species_involved_in_conservation_relations_echelon.csv\";",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("ofstream output_file1(filename1.c_str());",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("ofstream output_file4(filename4.c_str());",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("ofstream output_file5(filename5.c_str());",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("if (output_file1.is_open()){",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("  for ( int i=1; i<= (number_vertices-dim_Nr) ;++i){",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("  nbre_species_conservation[i] = 0;",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("     for (int j=1;j<=dim_Nr;++j)",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("     {",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("       if (matrix_coef_L[i][j] != 0){ nbre_species_conservation[i]++; if (matrix_coef_L[i][j]> 0.0){output_file1 <<\" +\"<<  matrix_coef_L[i][j] << \"*X[\" <<X_echelon_label[j] <<\"] \";}",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("       else{output_file1 <<  matrix_coef_L[i][j] << \"*X[\" <<X_echelon_label[j] <<\"] \";}",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("     }",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("     }// end  for (int j=1;j<=dim_Nr ;++j)",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("	 nbre_species_conservation[i]++;",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("	 output_file1 << \" -X[\" <<  X_echelon_label[dim_Nr+i]<<\"] = Cte\"<< endl;",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("  }// end for ( int i=1; i<= (number_vertices-dim_Nr) ;++i)",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("  output_file1.close();",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("}else{cout << \"file can not be opened\"  << endl;}",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("if (output_file4.is_open()){",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("  for ( int i=1; i<= (number_vertices-dim_Nr) ;++i){",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("     output_file4<< nbre_species_conservation[i]<<\",\";",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("     for (int j=1;j<=dim_Nr;++j)",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("    {",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("       if (matrix_coef_L[i][j] != 0){  if (matrix_coef_L[i][j]> 0.0){output_file4  <<X_echelon_label[j]<<\",\";}",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("	   else{output_file4<<X_echelon_label[j]<<\",\";}",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("	   }",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("     }// end  for (int j=1;j<=dim_Nr ;++j)",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste(" output_file4 <<  X_echelon_label[dim_Nr+i]<< endl;",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("  }// end for ( int i=1; i<= (number_vertices-dim_Nr) ;++i)",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("  output_file4.close();",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("}else{cout << \"file can not be opened\"  << endl;}",sep="")
+
+k<-k+1
+output_conservation_relationships[k,1]<-paste("if (output_file5.is_open()){",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("  for ( int i=1; i<= (number_vertices-dim_Nr) ;++i){",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("     output_file5<< nbre_species_conservation[i]<<\",\";",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("     for (int j=1;j<=dim_Nr;++j)",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("    {",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("       if (matrix_coef_L[i][j] != 0){  if (matrix_coef_L[i][j]> 0.0){output_file5  <<j<<\",\";}",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("	   else{output_file5<<j<<\",\";}",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("	   }",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("     }// end  for (int j=1;j<=dim_Nr ;++j)",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste(" output_file5 <<  X_echelon_label[dim_Nr+i]<< endl;",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("  }// end for ( int i=1; i<= (number_vertices-dim_Nr) ;++i)",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("  output_file5.close();",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("}else{cout << \"file can not be opened\"  << endl;}",sep="")
+
+
+
+k<-k+1
+output_conservation_relationships[k,1]<-paste("ofstream output_file2(filename2.c_str());",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("if (output_file2.is_open()){",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("  for ( int i=1; i<= (number_vertices-dim_Nr) ;++i){",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("     for (int j=1;j<=dim_Nr ;++j)",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("     {",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("      if (j !=dim_Nr){ output_file2 <<  matrix_coef_L[i][j] <<\",\";}else{ output_file2 <<  matrix_coef_L[i][j] <<endl;}",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("     }// end  for (int j=1;j<=nbre_reactions ;++j)",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("  }// end for ( int i=1; i<= nbre_reactions ;++i)",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("  output_file2.close();",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("}else{cout << \"file can not be opened\"  << endl;}",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("ofstream output_file3(filename3.c_str());",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("if (output_file3.is_open()){",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("  for ( int i=1; i<= number_vertices ;++i){",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("     output_file3 <<X_echelon_label[i] <<endl;",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("  }// end for ( int i=1; i<= number_vertices ;++i)",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste(" output_file3.close();",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("}else{cout << \"file can not be opened\"  << endl;}",sep="")
+k<-k+1
+output_conservation_relationships[k,1]<-paste("return;}",sep="")
+
+
+
+
+for (i in 1:nrow(output_conservation_relationships)){
+if (as.character(output_conservation_relationships[i,1])==as.character("NA?#")){output_conservation_relationships[i,1]<-""}
+}
+setwd(fichier_output_sierraII_projet)
+write(output_conservation_relationships, file="output_conservation_relationships.cc")
+setwd(reactions_file_initial_data)
+
+
+
+########################################################################################################################
+#
+#                    GENERATION   output_matrices_fluxes
+#
+########################################################################################################################
+
+
+output_matrices_fluxes<-matrix(nrow = 45	, ncol=1)
+output_matrices_fluxes[,]<-"NA?#"
+k<-1
+
+output_matrices_fluxes[k,1]<-paste("/* contient les éléments cin et cout entre autre*/",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("#include <iostream>",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("/* fstream: stream  class to both read and write  from/to  files */",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("#include <fstream>",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("/* utilisation des chaines de caractères*/",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("#include <string>",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("/* utilisation des manipulateurs*/",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("#include<iomanip>",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("/*conversion nombre string et tring nombre (stringstream,  etc)*/",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("#include<sstream>",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("#include\"output_matrices_fluxes.h\"",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("using namespace std;",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("void  output_matrices_fluxes(double** matrix_GAMMA,  double** matrix_C, int& nbre_reactions,int& number_vertices, int& time_point,int* X_echelon_label){",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("string OUTPUT_FILE_NAME =\"",dossier_sortie_path,"output_data/screenshot/\";",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("std::ostringstream tp_shot;",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("tp_shot << time_point;",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("std::string label_name = tp_shot.str();",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("string  filename1 =OUTPUT_FILE_NAME+label_name+ \"-MATRIX-C.csv\";",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("string  filename2 =OUTPUT_FILE_NAME+label_name+ \"-MATRIX-GAMMA.csv\";",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("ofstream output_file1(filename1.c_str());",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("if (output_file1.is_open()){",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("  for ( int i=1; i<= nbre_reactions ;++i){",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("     for (int j=1;j<=nbre_reactions ;++j)",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("     {",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("      if (j != nbre_reactions){ output_file1 <<  matrix_C[i][j] <<\",\";}else{ output_file1 <<  matrix_C[i][j] <<endl;}",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("     }// end  for (int j=1;j<=nbre_reactions ;++j)",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste(" }// end for ( int i=1; i<= nbre_reactions ;++i)",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("  output_file1.close();",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("}else{cout << \"file can not be opened\"  << endl;}",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("ofstream output_file2(filename2.c_str());",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("if (output_file2.is_open()){",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("  for ( int i=1; i<= number_vertices ;++i){",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("     for (int j=1;j<=nbre_reactions ;++j)",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("     {",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("      if (j != nbre_reactions){ output_file2 <<  matrix_GAMMA[X_echelon_label[i]][j] <<\",\";}else{ output_file2 << matrix_GAMMA[X_echelon_label[i]][j] <<endl;}",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("     }// end  for (int j=1;j<=nbre_reactions ;++j)",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("  }// end for ( int i=1; i<= number_vertices ;++i)",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("  output_file2.close();",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("}else{cout << \"file can not be opened\"  << endl;}",sep="")
+k<-k+1
+output_matrices_fluxes[k,1]<-paste("return;}",sep="")
+
+
+
+
+for (i in 1:nrow(output_matrices_fluxes)){
+if (as.character(output_matrices_fluxes[i,1])==as.character("NA?#")){output_matrices_fluxes[i,1]<-""}
+}
+
+
+setwd(fichier_output_sierraII_projet)
+write(output_matrices_fluxes, file="output_matrices_fluxes.cc")
+setwd(reactions_file_initial_data)
+
+
+
+
+########################################################################################################################
+#
+#              CONSTRUCTION DE LA MATRICE STOCHIOMETRIQUE ET DU  FICHIER SIERRAII  CORRESPONDANT
+#
+########################################################################################################################
+
+# il s'agit d'une matrice rectangulaire: nbre de ligne =  nbre de species = m
+#                                        nbre de colonne =  nbre de reactions = r
+# au maximum, une reaction peut faire varier 3 especes differentes. (les reactions bi -> bi etant proscrites)
+# donc chaque colonne a au maximum 3 elements non nuls.  
+# la matrice contient au maximum 3*r elements non nuls.
+
+stochio_matrix<-matrix(nrow =  nbre_species, ncol = nbre_reactions)
+stochio_matrix[,]<-0
+
+for ( i in 1:nbre_reactions)
+{
+   for (j in 8:9)
+   {
+      if(is.na(reactions_input[i,j]) == FALSE){stochio_matrix[abs(reactions_input[i,j]),i]<-stochio_matrix[abs(reactions_input[i,j]),i]-1}
+   }
+   for (j in 10:11)
+   {
+      if(is.na(reactions_input[i,j]) == FALSE){stochio_matrix[abs(reactions_input[i,j]),i]<-stochio_matrix[abs(reactions_input[i,j]),i]+1}
+   }
+} # end  for ( i in 1:nbre_reactions)
+
+################################################
+# ajout 12-10-2014 check line to  see if species are at equilibrium->  number of minus =  number of +
+check_line<-matrix(nrow =  nbre_species, ncol = 1)
+check_line[,]<-0
+for ( i in 1:nbre_species)
+{
+    for (j in 1:nbre_reactions)
+    {
+     check_line[i,1]<-check_line[i,1] +stochio_matrix[i,j]
+    }
+}
+################################################
+Stochiometric_matrix_set_up<-matrix(nrow = 20 + 3*nbre_reactions, ncol=1)
+Stochiometric_matrix_set_up[,]<-"NA?#"
+
+k<-1
+
+Stochiometric_matrix_set_up[k,1]<-paste("#include<cmath>",sep="")
+k<-k+1
+Stochiometric_matrix_set_up[k,1]<-paste("#include<iomanip>",sep="")
+k<-k+1
+Stochiometric_matrix_set_up[k,1]<-paste("#include\"Stochiometric_matrix_set_up.h\"",sep="")
+k<-k+1
+Stochiometric_matrix_set_up[k,1]<-paste("void Stochiometric_matrix_set_up(int** stochio_matrix){",sep="")
+k<-k+1
+for (i in 1:nbre_species)
+{
+  for (j in 1:nbre_reactions)
+  {
+    if (stochio_matrix[i,j] != 0)
+    {
+     k<-k+1
+     Stochiometric_matrix_set_up[k,1]<-paste("stochio_matrix[",i,"][",j,"] = ",stochio_matrix[i,j],";",sep="")
+    }
+  } # end  for (j in 1:nbre_reactions)
+} # end  for (i in 1:nbre_species)
+
+k<-k+1
+Stochiometric_matrix_set_up[k,1]<-paste("return;}",sep="")
+k<-k+1
+
+
+
+
+for (i in 1:nrow(Stochiometric_matrix_set_up)){
+if (as.character(Stochiometric_matrix_set_up[i,1])==as.character("NA?#")){Stochiometric_matrix_set_up[i,1]<-""}
+}
+setwd(fichier_output_sierraII_projet)
+write(Stochiometric_matrix_set_up, file="Stochiometric_matrix_set_up.cc")
+setwd(reactions_file_initial_data)
+
+
+########################################################################################################################
+#
+#              CONSTRUCTION DE LA MATRICE CONTENANT LES DERIVEES DES FLUXES; DvDx
+#
+########################################################################################################################
+
+# il s'agit d'une matrice de dimension r*m (nbre_reactions*nbre_species_active_ode)
+# ce qui  suit est importe du  code VICTORIII  et adapte aux cas des fluxes
+
+
+#########################################################################################################################
+#              creation of a file containing the label of the kinetic constants of the repressors
+# 'label' is equal to  the total number of kinetic constant and as such it is used during the complete generation process
+#########################################################################################################################
+
+label_repressor<-matrix(nrow =nbre_species+1, ncol =  nbre_reactions)
+label_repressor[,]<-0
+label<-nbre_reactions
+for (i in 1:nbre_reactions){
+  if (repressor[1,i] != 0){
+    ds<-repressor[1,i]+1
+      label_repressor[1,i]<-repressor[1,i]
+    for (j in 2:ds){
+      label<-label+1
+      label_repressor[j,i]<- label
+    }
+  }
+}
+
+
+
+
+####################################################################################################
+# creation of the matrix for the p coefficients
+##################################################
+p_coefficients<-matrix(nrow = nbre_species,  ncol = nbre_reactions)
+p_coefficients[,]<- 0
+# coefficients are postive in the right side (columns 10-11)
+
+for (i in 1:nbre_reactions){
+
+    if (is.na(reactions_input[i,10]) == FALSE && is.na(reactions_input[i,11]) == FALSE){
+        if (reactions_input[i,10] == reactions_input[i,11]){p_coefficients[reactions_input[i,10], i] <-2}
+        if (reactions_input[i,10] != reactions_input[i,11]){
+          p_coefficients[reactions_input[i,10], i] <-1
+          p_coefficients[reactions_input[i,11], i] <-1
+        }
+     }
+ if (is.na(reactions_input[i,10]) == FALSE && is.na(reactions_input[i,11]) != FALSE){
+       p_coefficients[reactions_input[i,10], i] <-1
+ }
+ if (is.na(reactions_input[i,10]) != FALSE && is.na(reactions_input[i,11]) == FALSE){
+       p_coefficients[reactions_input[i,11], i] <-1
+ }
+
+}
+####################################################################################################
+# creation of the matrix for the r coefficients
+#################################################
+r_coefficients<-matrix(nrow = nbre_species,  ncol = nbre_reactions)
+r_coefficients[,] <-0
+# coefficients are postive in the right side (columns 8-9)
+
+for (i in 1:nbre_reactions){
+
+    if (is.na(reactions_input[i,8]) == FALSE && is.na(reactions_input[i,9]) == FALSE){
+        if (reactions_input[i,8] == reactions_input[i,9]){r_coefficients[-reactions_input[i,9], i] <-2}
+        if (reactions_input[i,8] != reactions_input[i,9]){
+          r_coefficients[-reactions_input[i,8], i] <-1
+          r_coefficients[-reactions_input[i,9], i] <-1
+        }
+     }
+ if (is.na(reactions_input[i,8]) == FALSE && is.na(reactions_input[i,9]) != FALSE){
+       r_coefficients[-reactions_input[i,8], i] <-1
+ }
+ if (is.na(reactions_input[i,8]) != FALSE && is.na(reactions_input[i,9]) == FALSE){
+       r_coefficients[-reactions_input[i,9], i] <-1
+ }
+
+}
+####################################################################################################
+# creation de la matrice p-r
+##############################
+diff_pr<-matrix(nrow = nbre_species,ncol = nbre_reactions )
+
+diff_pr =   p_coefficients- r_coefficients
+####################################################################################################
+
+#####################################
+# vecteur des constantes cinetiques
+#####################################
+
+
+value_rate_constant <- read.csv('rate_constants.csv',header=FALSE)
+
+reactions_rate<-matrix(nrow = label, ncol =1)
+reactions_rate<-as.vector(reactions_rate)
+
+for (i  in 1:nbre_reactions){
+ reactions_rate[i]<-paste("k[",i,"]=",value_rate_constant[i,2], sep="")
+}
+index<-nbre_reactions
+for (i in 1:nbre_reactions){
+  if (repressor[1,i] != 0){
+    ds<-repressor[1,i]+1
+      
+    for (j in 2:ds){
+      index<-index+1
+      reactions_rate[index]<-paste("k[",index,"]=",repressor_rate_constants[ds,i], sep="")
+    }
+  }
+}
+
+
+#### kinetic constant
+sierra_kinetic_constant<-matrix(nrow =label+3 , ncol = 1)
+
+sierra_kinetic_constant[1,1]<-paste("#include\"Initialization_kinetic_constant.h\"",sep="")
+sierra_kinetic_constant[2,1]<-paste("void  Initialization_kinetic_constant( double* k){",sep="")
+i <- 2
+for (j in 1:label){
+i<-i+1
+sierra_kinetic_constant[i,1]<-paste(reactions_rate[j],";",sep="")
+}
+i<-i+1
+sierra_kinetic_constant[i,1]<-paste("return;}",sep="")
+
+
+#==================================================================================================
+setwd(fichier_output_sierraII_projet)
+write(sierra_kinetic_constant, file="Initialization_kinetic_constant.cc")
+setwd(reactions_file_initial_data)
+#==================================================================================================
+
+
+###################################################################################################
+#
+#   INITIAL SET UP  SIERRAII
+#
+###################################################################################################
+
+
+
+
+Initial_set_up<-matrix(nrow = 12 , ncol=1)
+Initial_set_up[,]<-"NA?#"
+k<-1
+Initial_set_up[k,1]<-paste("#include \"Initial_set_up.h\"",sep="")
+k<-k+1
+Initial_set_up[k,1]<-paste("void Initial_set_up(int& number_vertices,int& nbre_colonne,int& number_time_points, int& nbre_reactions, int& nbre_kinetic_cte){",sep="")
+k<-k+1
+Initial_set_up[k,1]<-paste("number_vertices =",nbre_species_active_ode,";",sep="")
+k<-k+1
+Initial_set_up[k,1]<-paste("nbre_colonne =",nbre_species+1,";",sep="")
+k<-k+1
+Initial_set_up[k,1]<-paste("number_time_points = 5000;",sep="")
+k<-k+1
+Initial_set_up[k,1]<-paste("nbre_reactions =",nbre_reactions,";",sep="")
+k<-k+1
+Initial_set_up[k,1]<-paste("nbre_kinetic_cte = ",label,";",sep="")
+k<-k+1
+Initial_set_up[k,1]<-paste("return;}",sep="")
+
+
+
+for (i in 1:nrow(Initial_set_up)){
+if (as.character(Initial_set_up[i,1])==as.character("NA?#")){Initial_set_up[i,1]<-""}
+}
+
+setwd(fichier_output_sierraII_projet)
+write(Initial_set_up, file="Initial_set_up.cc")
+setwd(reactions_file_initial_data)
+
+
+
+
+
+
+
+###################################################################################################	
+
+################################
+# creation de la matrice phi
+################################
+
+
+phi_k<-matrix(nrow = nbre_reactions , ncol = 1)
+phi_k<-as.vector(phi_k)
+
+for (j in 1:nbre_reactions){
+ if (repressor[1,j] == 0){
+  phi_k[j] <-paste("k[",j,"]",sep="")
+ }
+ if (repressor[1,j] != 0){
+  global_rep<-matrix(nrow = 1, ncol = 1)
+  global_rep<-"1.0"
+  rep<-repressor[1,j]+1
+  for (repression in 2:rep){
+   rep_vector<-paste("+k[",label_repressor[repression,j],"]*X[",repressor[repression,j],"]",sep="")
+   global_rep<-paste(global_rep,rep_vector,sep="")
+  }
+  phi_k[j] <-paste("k[",j,"]*(1.0/(",global_rep,"))",sep="")
+ } # end if repressor !=0
+ if (repressor[1,j] == 0){
+ for( i in 1:nbre_species){
+    if ( r_coefficients[i,j] !=0) { 
+     if ( r_coefficients[i,j] >1){phi_k[j] <-paste(phi_k[j], "*pow(X[", i,"],", r_coefficients[i,j],")"  ,sep="")}
+     if ( r_coefficients[i,j] == 1){phi_k[j] <-paste(phi_k[j], "*X[", i,"]",sep="")}
+    }
+ }
+} # end if 
+if (repressor[1,j] != 0){
+ closure<-0
+ for( i in 1:nbre_species){
+    if ( r_coefficients[i,j] !=0) { closure<-1
+     if ( r_coefficients[i,j] >1){phi_k[j] <-paste(phi_k[j], "pow(X[", i,"],", r_coefficients[i,j],")"  ,sep="")}
+     if ( r_coefficients[i,j] == 1){phi_k[j] <-paste(phi_k[j], "X[", i,"]",sep="")}
+    }
+   
+ }
+ if (closure ==0){phi_k[j] <-paste(phi_k[j], "1.0",sep="")}
+} # end if 
+
+}
+
+
+##################################################################################################
+##################################################################################################
+#             GENERATION OF MATHEMATICA OUTPUT FILE FOR SYMBOLIC TREATMENT
+##################################################################################################
+##################################################################################################
+# creation de la matrice phi
+#############################
+phi_k<-matrix(nrow = nbre_reactions , ncol = 1)
+phi_k<-as.vector(phi_k)
+
+#######################################################################
+# ce vecteur contient la dependance de chaque phi  part rapport au  X
+####################################################################### 
+phi_dependence<-matrix(nrow = nbre_reactions, ncol = nbre_species)
+phi_dependence[,]<- 0
+
+##########################################################################################
+for (j in 1:nbre_reactions){
+ if (repressor[1,j] == 0){
+   phi_k[j] <-paste("k[",j,"]",sep="")
+ }
+ if (repressor[1,j] != 0){
+  global_rep<-matrix(nrow = 1, ncol = 1)
+  global_rep<-"1.0"
+  rep<-repressor[1,j]+1
+  for (repression in 2:rep){
+   rep_vector<-paste("+k[",label_repressor[repression,j],"]*X[",repressor[repression,j],"]",sep="")
+   global_rep<-paste(global_rep,rep_vector,sep="")
+   phi_dependence[j,repressor[repression,j]]<- 1
+  }
+  phi_k[j] <-paste("k[",j,"]*(1.0/(",global_rep,"))",sep="")
+ } # end if repressor !=0
+
+  if (repressor[1,j] == 0){
+ for( i in 1:nbre_species){
+    if ( r_coefficients[i,j] !=0) { 
+     if ( r_coefficients[i,j] >1){phi_k[j] <-paste(phi_k[j], "*(X[", i,"]^", r_coefficients[i,j],")"  ,sep="")}
+     if ( r_coefficients[i,j] == 1){phi_k[j] <-paste(phi_k[j], "*X[", i,"]",sep="")}
+     phi_dependence[j,i]<- 1
+     }
+ }
+} # end if 
+if (repressor[1,j] != 0){
+ closure<-0
+ for( i in 1:nbre_species){
+    if ( r_coefficients[i,j] !=0) { closure<-1
+     if ( r_coefficients[i,j] >1){phi_k[j] <-paste(phi_k[j], "(X[", i,"]^", r_coefficients[i,j],")"  ,sep="")}
+     if ( r_coefficients[i,j] == 1){phi_k[j] <-paste(phi_k[j], "X[", i,"]",sep="")}
+     phi_dependence[j,i]<- 1
+    }
+   
+ }
+ if (closure ==0){phi_k[j] <-paste(phi_k[j], "1.0",sep="")}
+} # end if 
+}
+
+############################################################################################
+#                    MATHEMATICA INPUT FOR DvDx MATRIX CALCULATION C++  version-SIERRA II
+############################################################################################
+
+
+dphi_k_dependence<-0
+for (j in 1:nbre_reactions){
+  for (i in 1:nbre_species){
+    if (phi_dependence[j,i] != 0){dphi_k_dependence<-dphi_k_dependence+1}
+  }
+}
+output_mathematica<-matrix(nrow =  dphi_k_dependence, ncol = 1)
+
+k<-0
+for (j in 1:nbre_reactions){
+for (i in 1:nbre_species){
+  if (phi_dependence[j,i] != 0){
+  k<-k+1
+  output_mathematica[k,1]<-paste("Print[NumberForm[CForm[Simplify[D[",phi_k[j],",X[",i,"]]]]]]",sep="")
+  }
+}
+}
+
+###########################################################################################
+setwd(source_code_symbolic_mathematica)
+write(output_mathematica, file="mathematica_DvDx.nb")
+
+
+############################################################################################
+####################STOP STOP STOP STOP ####################################################
+############################################################################################
+
+############################################################################################
+# 1) executer le code source mathematica
+# 2) une fois execution-> save as special  text
+# 3) open in txtedit and  suppress the input commands part
+# 4) Open  the text file in Excell  and suppress all the "=" symbols
+# 5) save the file in the  csv (DOS) format under the same name
+# 6) run the second part of this code(everything which is below the #### line)
+############################################################################################
+############################################################################################
+
+
+#################################################################################
+#
+#   POST-TREATMENT OF THE HESSENBERG MATRIX OBTAINED FROM MATHEMATICA SIERRAII 
+#
+#################################################################################
+DvDx_matrix<-read.csv('mathematica_DvDx.csv',header=FALSE)
+DvDx_one_line<-matrix(nrow =dphi_k_dependence, ncol = 1)
+#================================================================================
+# 1) all the expressions must be rewritten in order to  appear on one line each
+#================================================================================
+k<-0
+jk<- 0
+for (i in 2:nrow(DvDx_matrix)){
+  if (as.character(DvDx_matrix[1,1]) != as.character(DvDx_matrix[i,1])){
+  k <-k+1
+   if (i == nrow(DvDx_matrix)){
+      if (k == 1 ){ jk<-jk+1
+      DvDx_one_line[jk,1]<-paste(DvDx_matrix[i,1],sep="")
+      k <-0
+    }
+    if (k > 1){ jk<-jk+1
+     global_rep<-matrix(nrow = 1, ncol = 1)
+     global_rep<-""      
+      for (m in (k-1):0){
+       global_rep<-paste(global_rep,DvDx_matrix[i-m,1],sep="")
+      } # fin m for
+       DvDx_one_line[jk,1]<-paste( global_rep,sep="")
+       k <-0
+    } # fin if k>1
+   } # i == nrow (DvDx_matrix)
+  }  # as'cgharacter ==
+  if (as.character(DvDx_matrix[1,1]) == as.character(DvDx_matrix[i,1])){
+    if (k == 1 ){ jk<-jk+1
+      DvDx_one_line[jk,1]<-paste(DvDx_matrix[i-1,1],sep="")
+      k <-0
+    }
+    if (k > 1){ jk<-jk+1
+     global_rep<-matrix(nrow = 1, ncol = 1)
+     global_rep<-""      
+      for (m in k:1){
+       global_rep<-paste(global_rep,DvDx_matrix[i-m,1],sep="")
+      } # fin m for
+       DvDx_one_line[jk,1]<-paste( global_rep,sep="")
+       k <-0
+    } # fin if k>1
+  }
+}
+
+matrix_DvDx_CC<-matrix(nrow = nrow(output_mathematica) ,ncol =1)
+
+
+k<-0
+colonne<-0
+ligne<-1
+cont<-0
+
+for (i in 1:(nbre_reactions*nbre_species_active_ode)){
+ cont<-cont+1
+ colonne<-colonne+1
+ if (phi_dependence[ligne,colonne] != 0){ k<-k+1
+  matrix_DvDx_CC[k,1]<-paste("DvDx_matrix[",ligne,"][",colonne,"]=",DvDx_one_line[k,1] ,sep="")
+ }
+  if (cont ==nbre_species_active_ode){
+    cont<-0
+    ligne<-ligne+1
+    colonne<-0
+  }
+}
+
+
+###########################################################################################
+# Pour le C on remplace X( )  par X[  ]
+########################################### 
+for (i in 1:nbre_species){
+  initial_expression<-paste("X(",i,")",sep="")
+  replacement<-paste("X[",i,"]",sep="")
+  matrix_DvDx_CC[,1]<-gsub(initial_expression, replacement,matrix_DvDx_CC[,1], fixed = TRUE)
+  
+}
+###########################################
+# REMPLACE LE K() PAR k[]
+###########################################
+for (i in 1:label){
+  initial_expression<-paste("k(",i,")",sep="")
+  replacement<-paste("k[",i,"]",sep="")
+  matrix_DvDx_CC[,1]<-gsub(initial_expression, replacement,matrix_DvDx_CC[,1], fixed = TRUE)
+  
+}
+###########################################
+# Remplace Power par pow
+###########################################
+
+  initial_expression<-paste("Power",sep="")
+  replacement<-paste("pow",sep="")
+  matrix_DvDx_CC[,1]<-gsub(initial_expression, replacement,matrix_DvDx_CC[,1], fixed = TRUE)
+ 
+
+
+##########################################################################################
+#               fichier pour la matrice DvDx
+#########################################################################################
+matrix_DvDx_cc_init<-matrix(nrow  = nrow(matrix_DvDx_CC)+4, ncol = 1)
+
+matrix_DvDx_cc_init[1,1]<-paste("#include<cmath>",sep="")
+matrix_DvDx_cc_init[2,1]<-paste("#include \"Fluxes_rates_analytical_init.h\"", sep="")
+matrix_DvDx_cc_init[3,1]<-paste("void Fluxes_rates_analytical_init(double** DvDx_matrix, double* X, double* k ){", sep="")
+for (j in 1:nrow(matrix_DvDx_CC)){
+matrix_DvDx_cc_init[3+j,1]<-paste(matrix_DvDx_CC[j,1],";",sep="")
+}
+matrix_DvDx_cc_init[nrow(matrix_DvDx_CC)+4,1]<-paste("return;}",sep="")
+
+setwd(fichier_output_sierraII_projet)
+write(matrix_DvDx_cc_init, file="Fluxes_rates_analytical_init.cc")
+
+
+###############################################################################################
+#  forme reduite de la matrice DvDx:  uniquement les termes variables
+##############################################################################################
+# To compute DvDx during time evolution, we need the X dependent terms only
+##############################################################################################
+
+DvDx_time<-matrix(nrow = 6+length(number_X  <- grep("X",matrix_DvDx_CC[,1] )), ncol = 1)
+DvDx_time[,]<-"NA?#"
+DvDx_time[1,1]<-paste("#include<cmath>", sep="")
+DvDx_time[2,1]<-paste("#include \"Fluxes_rates_analytical.h\"
+",sep="")
+DvDx_time[3,1]<-paste("void Fluxes_rates_analytical(double** DvDx_matrix, double* X, double* k){", sep="")
+k<-3
+l<-0
+for (i in 1:length(number_X)){
+   k<-k+1
+   l<-l+1
+   DvDx_time[k,1]<-paste(matrix_DvDx_CC[number_X[l] ,1],";",sep="")
+}
+DvDx_time[k+1,1]<-paste("return;}",sep="")
+
+for (i in 1:nrow(DvDx_time)){
+if (as.character(DvDx_time[i,1])==as.character("NA?#")){DvDx_time[i,1]<-""}
+}
+
+write(DvDx_time, file="Fluxes_rates_analytical.cc")
+
+
+#############################################################################################
+#
+#                    FIN PROCEDURE DE CONSTRUCTION DE LA MATRICE DvDX
+#
+#############################################################################################
+
+
+
