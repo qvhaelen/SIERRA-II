@@ -1,0 +1,80 @@
+From In[1]:=
+k(1)
+From In[1]:=
+k(2)
+From In[1]:=
+k(3)
+From In[1]:=
+k(4)
+From In[1]:=
+k(5)
+From In[1]:=
+k(6)
+From In[1]:=
+k(7)
+From In[1]:=
+k(8)
+From In[1]:=
+k(9)*X(3)
+From In[1]:=
+k(9)*X(2)
+From In[1]:=
+k(10)
+From In[1]:=
+k(11)
+From In[1]:=
+k(12)
+From In[1]:=
+k(13)
+From In[1]:=
+k(14)*X(8)
+From In[1]:=
+k(14)*X(5)
+From In[1]:=
+k(15)*X(16)
+From In[1]:=
+k(15)*X(5)
+From In[1]:=
+k(16)*X(17)
+From In[1]:=
+k(16)*X(9)
+From In[1]:=
+k(17)*X(18)
+From In[1]:=
+k(17)*X(11)
+From In[1]:=
+k(18)*X(20)
+From In[1]:=
+k(18)*X(1)
+From In[1]:=
+k(19)
+From In[1]:=
+k(20)
+From In[1]:=
+k(21)
+From In[1]:=
+k(22)
+From In[1]:=
+k(23)
+From In[1]:=
+k(24)
+From In[1]:=
+k(27)
+From In[1]:=
+k(28)
+From In[1]:=
+k(29)
+From In[1]:=
+k(30)
+From In[1]:=
+k(31)
+From In[1]:=
+k(32)
+From In[1]:=
+k(33)
+From In[1]:=
+k(34)
+From In[1]:=
+k(35)
+From In[1]:=
+k(36)

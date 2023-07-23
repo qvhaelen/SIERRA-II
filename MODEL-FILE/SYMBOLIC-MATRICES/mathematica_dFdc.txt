@@ -1,0 +1,144 @@
+From In[1]:=
+X(4)
+From In[1]:=
+X(4)
+From In[1]:=
+-X(4)
+From In[1]:=
+-X(4)
+From In[1]:=
+X(4)
+From In[1]:=
+-X(6)
+From In[1]:=
+X(6)
+From In[1]:=
+-X(6)
+From In[1]:=
+X(6)
+From In[1]:=
+X(6)
+From In[1]:=
+-X(6)
+From In[1]:=
+X(6)
+From In[1]:=
+X(7)
+From In[1]:=
+-X(7)
+From In[1]:=
+X(7)
+From In[1]:=
+X(10)
+From In[1]:=
+-X(10)
+From In[1]:=
+X(10)
+From In[1]:=
+X(13)
+From In[1]:=
+-X(13)
+From In[1]:=
+X(13)
+From In[1]:=
+-(X(2)*X(3))
+From In[1]:=
+-(X(2)*X(3))
+From In[1]:=
+X(2)*X(3)
+From In[1]:=
+-X(7)
+From In[1]:=
+-X(7)
+From In[1]:=
+X(7)
+From In[1]:=
+-X(5)
+From In[1]:=
+X(5)
+From In[1]:=
+-X(5)
+From In[1]:=
+-(X(5)*X(8))
+From In[1]:=
+X(5)*X(8)
+From In[1]:=
+-(X(5)*X(8))
+From In[1]:=
+-(X(5)*X(16))
+From In[1]:=
+X(5)*X(16)
+From In[1]:=
+-(X(5)*X(16))
+From In[1]:=
+-(X(9)*X(17))
+From In[1]:=
+X(9)*X(17)
+From In[1]:=
+-(X(9)*X(17))
+From In[1]:=
+-(X(11)*X(18))
+From In[1]:=
+X(11)*X(18)
+From In[1]:=
+-(X(11)*X(18))
+From In[1]:=
+-(X(1)*X(20))
+From In[1]:=
+X(1)*X(20)
+From In[1]:=
+-(X(1)*X(20))
+From In[1]:=
+-X(15)
+From In[1]:=
+-X(11)
+From In[1]:=
+X(11)
+From In[1]:=
+-X(8)
+From In[1]:=
+X(8)
+From In[1]:=
+-X(1)
+From In[1]:=
+-X(3)
+From In[1]:=
+-X(19)
+From In[1]:=
+1
+From In[1]:=
+1
+From In[1]:=
+-X(16)
+From In[1]:=
+-X(2)
+From In[1]:=
+X(2)
+From In[1]:=
+-X(2)
+From In[1]:=
+X(2)
+From In[1]:=
+X(11)
+From In[1]:=
+X(15)
+From In[1]:=
+-X(8)
+From In[1]:=
+X(8)
+From In[1]:=
+X(12)
+From In[1]:=
+-X(12)
+From In[1]:=
+-X(9)
+From In[1]:=
+X(9)
+From In[1]:=
+X(11)
+From In[1]:=
+-X(11)
+From In[1]:=
+-X(14)
+From In[1]:=
+X(14)
